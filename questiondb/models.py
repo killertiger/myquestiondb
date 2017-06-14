@@ -2,7 +2,7 @@ from django.db import models
 
 
 # Create your models here.
-# TODO: explanation, tags, source, shared_text, imagedb
+# TODO: explanation, tags, source, shared_text, imagedb, classification
 class Question(models.Model):
     title = models.CharField(max_length=300)
     body_html = models.TextField()
