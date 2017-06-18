@@ -8,10 +8,10 @@
 {% if question_list %}
 <ul>
 {% for question in question_list %}
-    <li>{{ question }}</li>
+    <li>{{ question }} - <a href="{% url 'question-update' question.pk %}">Edit</a> </li>
 {% endfor %}
 </ul>
 {% endif %}
-<a href="{% url 'question-create' %}">Criar</a>
+<a href="{% url 'question-create' %}">New</a>
 </body>
 </html>

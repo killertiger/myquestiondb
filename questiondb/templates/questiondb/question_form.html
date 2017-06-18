@@ -1,0 +1,51 @@
+{% extends "base.html" %}
+
+{% block content %}
+{% load staticfiles %}
+<form action="" method="post">
+    {% csrf_token %}
+    {{ form.as_p }}
+
+    <table>
+        {{ alternatives.management_form }}
+
+        {% for form in alternatives.forms %}
+            {% if forloop.first %}
+                <thead>
+                <tr>
+                    {% for field in form.visible_fields %}
+                        <th>{{ field.lable|capfirst }}</th>
+                    {% endfor %}
+                </tr>
+                </thead>
+            {% endif %}
+            <tr class="{% cycle row1 row2 %} formset_row">
+            {% for field in form.visible_fields %}
+                <td>
+                {% if forloop.first %}
+                    {% for hidden_field in form.hidden_fields %}
+                        {{ hidden_field }}
+                    {% endfor %}
+                {% endif %}
+                {{ field.errors_as_ul }}
+                {{ field }}
+                </td>
+            {% endfor %}
+            </tr>
+        {% endfor %}
+    </table>
+
+    <input type="submit" value="Create" /> <a href="">back to the list</a>
+    </form>
+
+<script src="//ajax.googleapis.com/ajax/libs/jquery/2.1.3/jquery.min.js"></script>
+<script src="{% static 'formset/jquery.formset.js' %}"></script>
+
+<script type="text/javascript">
+    $('.formset_row').formset({
+        addText: 'add family member',
+        deleteText: 'remove',
+        prefix: 'familymember_set'
+    });
+</script>
+{% endblock %}

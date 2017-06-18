@@ -12,7 +12,7 @@ class Question(models.Model):
         return self.title
 
 
-class Choice(models.Model):
+class Alternative(models.Model):
     question = models.ForeignKey("question")
     body_html = models.TextField()
     body_plain_text = models.TextField()
