@@ -5,7 +5,7 @@ from django.db import models
 # TODO: explanation, tags, source, shared_text, imagedb, classification
 class Question(models.Model):
     title = models.CharField(max_length=300)
-    body_html = models.TextField()
+    body_html = models.TextField(verbose_name='Text')
     body_plain_text = models.TextField()
 
     def __str__(self):

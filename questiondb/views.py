@@ -4,6 +4,7 @@ from django.shortcuts import render
 # Create your views here.
 from django.urls import reverse_lazy
 from django.views import generic
+from django.views.generic import DeleteView
 from django.views.generic import UpdateView
 
 from questiondb.forms import AlternativeFormSet
@@ -16,7 +17,7 @@ class QuestionListView(generic.ListView):
 
 class QuestionCreateView(generic.CreateView):
     model = Question
-    fields = "__all__"
+    fields = ["title", "body_html"]
     success_url = reverse_lazy('question-list')
 
     def get_context_data(self, **kwargs):
@@ -42,15 +43,15 @@ class QuestionCreateView(generic.CreateView):
 
 class QuestionUpdateView(UpdateView):
     model = Question
-    fields = "__all__"
+    fields = ["title", "body_html"]
     success_url = reverse_lazy('question-list')
 
     def get_context_data(self, **kwargs):
         data = super(QuestionUpdateView, self).get_context_data(**kwargs)
         if self.request.POST:
-            data['alternatives'] = AlternativeFormSet(self.request.POST)
+            data['alternatives'] = AlternativeFormSet(self.request.POST, instance=self.object)
         else:
-            data['alternatives'] = AlternativeFormSet()
+            data['alternatives'] = AlternativeFormSet(instance=self.object)
 
         return data
 
@@ -66,3 +67,8 @@ class QuestionUpdateView(UpdateView):
                 alternatives.save()
 
         return super(QuestionUpdateView, self).form_valid(form)
+
+
+class QuestionDeteleView(DeleteView):
+    model = Question
+    success_url = reverse_lazy('question-list')
