@@ -26,17 +26,25 @@ class QuestionCreateView(generic.CreateView):
             data['alternatives'] = AlternativeFormSet(self.request.POST)
         else:
             data['alternatives'] = AlternativeFormSet()
+
+        if 'question_type' in self.kwargs:
+            data['question_type'] = self.kwargs['question_type']
+
         return data
 
     def form_valid(self, form):
         context = self.get_context_data()
         alternatives = context['alternatives']
-        with transaction.atomic():
-            self.object = form.save()
 
-            if alternatives.is_valid():
-                alternatives.instance = self.object
-                alternatives.save()
+        if context['question_type'] == 't':
+            form.save()
+        else:
+            with transaction.atomic():
+                self.object = form.save()
+
+                if alternatives.is_valid():
+                    alternatives.instance = self.object
+                    alternatives.save()
 
         return super(QuestionCreateView, self).form_valid(form)
 
@@ -53,18 +61,23 @@ class QuestionUpdateView(UpdateView):
         else:
             data['alternatives'] = AlternativeFormSet(instance=self.object)
 
+        data['question_type'] = self.object.question_type
+
         return data
 
     def form_valid(self, form):
         context = self.get_context_data()
         alternatives = context['alternatives']
 
-        with transaction.atomic():
-            self.object = form.save()
+        if context['question_type'] == 't':
+            form.save()
+        else:
+            with transaction.atomic():
+                self.object = form.save()
 
-            if alternatives.is_valid():
-                alternatives.instance = self.object
-                alternatives.save()
+                if alternatives.is_valid():
+                    alternatives.instance = self.object
+                    alternatives.save()
 
         return super(QuestionUpdateView, self).form_valid(form)
 

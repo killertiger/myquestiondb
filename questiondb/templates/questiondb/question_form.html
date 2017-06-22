@@ -4,8 +4,10 @@
 {% load staticfiles %}
 <form action="" method="post">
     {% csrf_token %}
+    <input type="hidden" name="question_type" value="{{ question_type }}">
     {{ form.as_p }}
 
+    {% if question_type == 'm' %}
     <table>
         {{ alternatives.management_form }}
 
@@ -37,6 +39,8 @@
             </tr>
         {% endfor %}
     </table>
+
+    {% endif %}
 
     <input type="submit" value="Save" />
     <a href="{% url 'question-list' %}">back to the list</a>

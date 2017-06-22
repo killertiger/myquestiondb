@@ -13,6 +13,10 @@
 {% endfor %}
 </ul>
 {% endif %}
-<a href="{% url 'question-create' %}">New</a>
+<p>
+New
+<a href="{% url 'question-create' 'm'%}">Multiple Choice</a> |
+<a href="{% url 'question-create' 't'%}">Text</a>
+</p>
 </body>
 </html>
