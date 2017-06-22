@@ -1,1 +1,1 @@
-web: gunicorn myquestiondb.wsi --log-file -
+web: gunicorn myquestiondb.wsgi --log-file -
