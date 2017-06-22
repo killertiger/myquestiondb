@@ -27,7 +27,7 @@ SECRET_KEY = 'x&7z_@z7ajc$mz(xk-)j%u&)&pu$13)qp-ojc@gvj+q2&spepz'
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = True
 
-ALLOWED_HOSTS = []
+ALLOWED_HOSTS = ['127.0.0.1', 'myquestiondb.herokuapp.com']
 
 
 # Application definition
