@@ -23,19 +23,20 @@ class Question(models.Model):
     title = models.CharField(max_length=300)
     body_html = models.TextField(verbose_name='Text')
     body_plain_text = models.TextField()
+    category = models.ForeignKey("category", default=None, blank=True, null=True)
 
     QUESTION_TYPE = (
-        (('t', 'text'),
-         ('m', 'multiple choice')),
+        ('t', 'text'),
+         ('m', 'multiple choice'),
     )
 
-    DEGREE_OF_DIFICULTY = ((
+    DEGREE_OF_DIFICULTY = (
         (1, 'Very Easy'),
         (2, 'Easy'),
         (3, 'Normal'),
         (4, 'Hard'),
         (5, 'Very Hard')
-    ))
+    )
 
     question_type = models.CharField(max_length=1, choices=QUESTION_TYPE, blank=False, default='t')
     degree_of_dificulty = models.IntegerField(choices=DEGREE_OF_DIFICULTY, blank=False, default=DegreeOfDificulty.Normal)
@@ -60,9 +61,12 @@ class Alternative(models.Model):
         return self.body_plain_text
 
 
-class Category:
-    parent = models.ForeignKey("category")
+class Category(models.Model):
+    parent = models.ForeignKey("category", default=None, null=True, blank=True)
     name = models.CharField(max_length=100)
 
     def __str__(self):
+        if self.parent is not None:
+            return '%s -> %s' % (self.parent, self.name)
+            # return self.parent + " -> " + self.name
         return self.name
