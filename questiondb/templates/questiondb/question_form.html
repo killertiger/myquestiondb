@@ -1,7 +1,8 @@
 {% extends "base.html" %}
+{% load staticfiles %}
+{% load questiondb_extras %}
 
 {% block content %}
-{% load staticfiles %}
 <form action="" method="post">
     {% csrf_token %}
     <input type="hidden" name="question_type" value="{{ question_type }}">
@@ -23,7 +24,7 @@
             {% endif %}
             <tr class="{% cycle row1 row2 %} formset_row">
                 <td>
-                a)
+                {{ forloop.counter|int_to_str }})
                 </td>
             {% for field in form.visible_fields %}
                 <td>

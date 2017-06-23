@@ -36,3 +36,8 @@ class Alternative(models.Model):
 
     def __str__(self):
         return self.body_plain_text
+
+
+class QuestionType:
+    Text = 't'
+    MultipleChoice = 'm'
