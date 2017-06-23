@@ -15,6 +15,6 @@ class Migration(migrations.Migration):
         migrations.AddField(
             model_name='question',
             name='degree_of_dificulty',
-            field=models.CharField(choices=[(1, 'Very Easy'), (2, 'Easy'), (3, 'Normal'), (4, 'Hard'), (5, 'Very Hard')], default=(3,), max_length=1),
+            field=models.CharField(choices=[(1, 'Very Easy'), (2, 'Easy'), (3, 'Normal'), (4, 'Hard'), (5, 'Very Hard')], default=3, max_length=1),
         ),
     ]
