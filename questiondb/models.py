@@ -2,8 +2,21 @@ from django.db import models
 
 
 # Create your models here.
-# TODO: explanation, tags, source, shared_text, imagedb, classification, question type
+# TODO: explanation, tags, source, shared_text, imagedb, classification, degree
 from django.utils.html import strip_tags
+
+
+class QuestionType:
+    Text = 't'
+    MultipleChoice = 'm'
+
+
+class DegreeOfDificulty:
+    VeryEasy = 1,
+    Easy = 2,
+    Normal = 3,
+    Hard = 4,
+    VeryHard = 5
 
 
 class Question(models.Model):
@@ -16,7 +29,16 @@ class Question(models.Model):
          ('m', 'multiple choice')),
     )
 
+    DEGREE_OF_DIFICULTY = ((
+        (1, 'Very Easy'),
+        (2, 'Easy'),
+        (3, 'Normal'),
+        (4, 'Hard'),
+        (5, 'Very Hard')
+    ))
+
     question_type = models.CharField(max_length=1, choices=QUESTION_TYPE, blank=False, default='t')
+    degree_of_dificulty = models.IntegerField(choices=DEGREE_OF_DIFICULTY, blank=False, default=DegreeOfDificulty.Normal)
 
     def __str__(self):
         return self.title
@@ -38,6 +60,9 @@ class Alternative(models.Model):
         return self.body_plain_text
 
 
-class QuestionType:
-    Text = 't'
-    MultipleChoice = 'm'
+class Category:
+    parent = models.ForeignKey("category")
+    name = models.CharField(max_length=100)
+
+    def __str__(self):
+        return self.name

@@ -17,7 +17,7 @@ class QuestionListView(generic.ListView):
 
 class QuestionCreateView(generic.CreateView):
     model = Question
-    fields = ["title", "body_html"]
+    fields = ["title", "degree_of_dificulty", "body_html"]
     success_url = reverse_lazy('question-list')
 
     def get_context_data(self, **kwargs):
@@ -51,7 +51,7 @@ class QuestionCreateView(generic.CreateView):
 
 class QuestionUpdateView(UpdateView):
     model = Question
-    fields = ["title", "body_html"]
+    fields = ["title", "degree_of_dificulty", "body_html"]
     success_url = reverse_lazy('question-list')
 
     def get_context_data(self, **kwargs):
