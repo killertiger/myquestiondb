@@ -8,4 +8,5 @@ class AlternativeForm(ModelForm):
         model = Alternative
         exclude = ['body_plain_text',]
 
-AlternativeFormSet = inlineformset_factory(Question, Alternative, form=AlternativeForm, extra=1)
+AlternativeFormSetCreate = inlineformset_factory(Question, Alternative, form=AlternativeForm, extra=4)
+AlternativeFormSetUpdate = inlineformset_factory(Question, Alternative, form=AlternativeForm, extra=0)

@@ -6,10 +6,80 @@
 <form action="" method="post">
     {% csrf_token %}
     <input type="hidden" name="question_type" value="{{ question_type }}">
-    {{ form.as_p }}
+    {#  {{ form.as_p }} #}
+
+    {% for field in form.visible_fields %}
+        <p>{{ field.label_tag }}:
+            {{ field }}
+            {% if field.name == "category"%}
+                <a href="#">Select</a>
+            {% endif %}
+        </p>
+    {% endfor %}
+
+<div id="container">
+</div>
+<script>
+$(function() {
+  $('#container').jstree({
+      "core" : { "check_callback" : true,
+      'data' : [
+        { "text" : "Root node", "children" : [
+            { "text" : "Child node 1" },
+            { "text" : "Child node 2" }
+          ]
+        }
+      ]},
+      "plugins" : ["dnd","contextmenu"]
+  });
+  $("#container").on("changed.jstree", function (e, data) {
+      //console.log(data.instance.get_selected(true)[0].text);
+      //console.log(data.instance.get_node(data.selected[0]).text);
+  });
+    //$("#container").on("dnd_stop.vakata", function (e, data, element, helper, event) {
+    $(document).on("dnd_stop.vakata", function (e, data) {
+        alert("teste");
+    });
+    $("#container").on("dnd_start.vakata", function () {
+        alert("teste");
+    });
+    $("#container").on("model.jstree", function (e, data) {
+        console.log("create");
+        console.log(data);
+    });
+    $("#container").on("refresh_node.jstree", function (e, data) {
+        console.log("refresh");
+        console.log(data);
+    });
+    $("#container").on("set_id.jstree", function (e, data) {
+        console.log("set_id");
+        console.log(data);
+    });
+    $("#container").on("set_text.jstree", function (e, data) {
+        console.log("set_text.jstree");
+        console.log(data);
+    });
+    $("#container").on("create_node.jstree", function (e, data) {
+        console.log("create_node.jstree");
+        console.log(data);
+    });
+    $("#container").on("rename_node.jstree", function (e, data) {
+        console.log("rename_node.jstree");
+        console.log(data);
+    });
+    $("#container").on("delete_node.jstree", function (e, data) {
+        console.log("delete_node.jstree");
+        console.log(data);
+    });
+    $("#container").on("move_node.jstree", function (e, data) {
+        console.log("move_node.jstree");
+        console.log(data);
+    });
+});
+</script>
 
     {% if question_type == 'm' %}
-    <table>
+    <table id="tbalternatives">
         {{ alternatives.management_form }}
 
         {% for form in alternatives.forms %}
@@ -23,7 +93,7 @@
                 </thead>
             {% endif %}
             <tr class="{% cycle row1 row2 %} formset_row">
-                <td>
+                <td class="alternative-index">
                 {{ forloop.counter|int_to_str }})
                 </td>
             {% for field in form.visible_fields %}
@@ -51,10 +121,21 @@
 <script src="{% static 'formset/jquery.formset.js' %}"></script>
 
 <script type="text/javascript">
+    var currentLetter = null;
     $('.formset_row').formset({
         addText: 'add alternative',
         deleteText: 'remove',
-        prefix: 'alternative_set'
+        prefix: 'alternative_set',
+        added: function () {
+            var element = $(".alternative-index").last();
+            //alert($(".alternative-index").last().html());
+            if(currentLetter == null) {
+                currentLetter = element.text().trim().charCodeAt(0);
+            }
+            var charCode = ++currentLetter;
+            var newLetter = String.fromCharCode(charCode);
+            element.text(newLetter + ")");
+        }
     });
     CKEDITOR.replace( 'body_html' );
 </script>
