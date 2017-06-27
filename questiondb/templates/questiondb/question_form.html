@@ -21,59 +21,68 @@
 </div>
 <script>
 $(function() {
-  $('#container').jstree({
-      "core" : { "check_callback" : true,
-      'data' : [
-        { "text" : "Root node", "children" : [
-            { "text" : "Child node 1" },
-            { "text" : "Child node 2" }
-          ]
+    function getCookie(name) {
+        var cookieValue = null;
+        if (document.cookie && document.cookie != '') {
+            var cookies = document.cookie.split(';');
+            for (var i = 0; i < cookies.length; i++) {
+                var cookie = jQuery.trim(cookies[i]);
+                // Does this cookie string begin with the name we want?
+                if (cookie.substring(0, name.length + 1) == (name + '=')) {
+                    cookieValue = decodeURIComponent(cookie.substring(name.length + 1));
+                    break;
+                }
+            }
         }
-      ]},
+        return cookieValue;
+    }
+    var csrftoken = getCookie('csrftoken');
+
+    function csrfSafeMethod(method) {
+        // these HTTP methods do not require CSRF protection
+        return (/^(GET|HEAD|OPTIONS|TRACE)$/.test(method));
+    }
+    $.ajaxSetup({
+        beforeSend: function(xhr, settings) {
+            if (!csrfSafeMethod(settings.type) && !this.crossDomain) {
+                xhr.setRequestHeader("X-CSRFToken", csrftoken);
+            }
+        }
+    });
+
+
+  $('#container').jstree({
+      "core" :
+      { "check_callback" : true,
+          'data' :
+            {
+                "url" : "/questiondb/category/",
+                "dataType" : "json" // needed only if you do not supply JSON headers
+            }
+      },
       "plugins" : ["dnd","contextmenu"]
   });
-  $("#container").on("changed.jstree", function (e, data) {
-      //console.log(data.instance.get_selected(true)[0].text);
-      //console.log(data.instance.get_node(data.selected[0]).text);
-  });
-    //$("#container").on("dnd_stop.vakata", function (e, data, element, helper, event) {
-    $(document).on("dnd_stop.vakata", function (e, data) {
-        alert("teste");
-    });
-    $("#container").on("dnd_start.vakata", function () {
-        alert("teste");
-    });
-    $("#container").on("model.jstree", function (e, data) {
-        console.log("create");
-        console.log(data);
-    });
-    $("#container").on("refresh_node.jstree", function (e, data) {
-        console.log("refresh");
-        console.log(data);
-    });
-    $("#container").on("set_id.jstree", function (e, data) {
-        console.log("set_id");
-        console.log(data);
-    });
-    $("#container").on("set_text.jstree", function (e, data) {
-        console.log("set_text.jstree");
-        console.log(data);
-    });
     $("#container").on("create_node.jstree", function (e, data) {
-        console.log("create_node.jstree");
-        console.log(data);
+        // console.log("create_node.jstree");
+        // console.log(data);
+        $.post("/questiondb/category/create/", {parent_id: data.parent, name: data.node.text}, function () {
+        });
     });
     $("#container").on("rename_node.jstree", function (e, data) {
-        console.log("rename_node.jstree");
-        console.log(data);
+        category = {pk: data.node.id, name: data.text};
+        $.post("/questiondb/category/" + data.node.id, {name: data.text}, function () {
+            alert('ok');
+        });
     });
     $("#container").on("delete_node.jstree", function (e, data) {
-        console.log("delete_node.jstree");
-        console.log(data);
+        $.post("/questiondb/category/" + data.node.id, function () {
+            alert('ok');
+        });
     });
     $("#container").on("move_node.jstree", function (e, data) {
-        console.log("move_node.jstree");
-        console.log(data);
+        $.post("/questiondb/category/" + data.node.id, {parent_id: data.parent}, function () {
+            alert('ok');
+        });
     });
 });
 </script>

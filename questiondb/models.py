@@ -70,3 +70,7 @@ class Category(models.Model):
             return '%s -> %s' % (self.parent, self.name)
             # return self.parent + " -> " + self.name
         return self.name
+
+    @property
+    def children(self):
+        return Category.objects.filter(parent=self.pk)

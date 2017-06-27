@@ -1,4 +1,6 @@
 from django.db import transaction
+from django.http import HttpResponse
+from django.http import JsonResponse
 from django.shortcuts import render
 
 # Create your views here.
@@ -7,9 +9,10 @@ from django.views import generic
 from django.views.generic import DeleteView
 from django.views.generic import UpdateView
 from extra_views import SearchableListMixin
+from django.db import models
 
 from questiondb.forms import AlternativeFormSetCreate, AlternativeFormSetUpdate
-from questiondb.models import Question
+from questiondb.models import Question, Category
 
 
 class QuestionListView(generic.ListView):
@@ -87,3 +90,24 @@ class QuestionUpdateView(UpdateView):
 class QuestionDeteleView(DeleteView):
     model = Question
     success_url = reverse_lazy('question-list')
+
+def get_categories_recursive(categories):
+    response_data = []
+    for category in categories:
+        categoryObj = {'id': category.pk, 'text': category.name}
+        categoryObj['children'] = get_categories_recursive(category.children)
+        response_data.append(categoryObj)
+
+    return response_data
+
+def get_categories(request):
+    categories = Category.objects.filter(parent__isnull=True)
+    response_data = get_categories_recursive(categories)
+
+    return JsonResponse(response_data, safe=False)
+
+def create_category(request):
+    category = Category(name=request.POST["name"], parent_id=request.POST["parent_id"])
+    category.Save()
+
+    return HttpResponse(category.pk)
