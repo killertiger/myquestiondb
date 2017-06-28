@@ -10,9 +10,10 @@ from django.views.generic import DeleteView
 from django.views.generic import UpdateView
 from extra_views import SearchableListMixin
 from django.db import models
+from rest_framework import viewsets
 
 from questiondb.forms import AlternativeFormSetCreate, AlternativeFormSetUpdate
-from questiondb.models import Question, Category
+from questiondb.models import Question, Category, CategorySerializer
 
 
 class QuestionListView(generic.ListView):
@@ -111,3 +112,8 @@ def create_category(request):
     category.Save()
 
     return HttpResponse(category.pk)
+
+
+class CategoryViewSet(viewsets.ModelViewSet):
+    queryset = Category.objects.all()
+    serializer_class = CategorySerializer

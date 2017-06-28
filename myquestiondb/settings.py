@@ -27,7 +27,7 @@ SECRET_KEY = 'x&7z_@z7ajc$mz(xk-)j%u&)&pu$13)qp-ojc@gvj+q2&spepz'
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = True
 
-ALLOWED_HOSTS = ['127.0.0.1', 'myquestiondb.herokuapp.com']
+ALLOWED_HOSTS = ['127.0.0.1', 'myquestiondb.herokuapp.com', '0.0.0.0']
 
 
 # Application definition
@@ -40,6 +40,7 @@ INSTALLED_APPS = [
     'django.contrib.messages',
     'django.contrib.staticfiles',
     'questiondb.apps.QuestiondbConfig',
+    'rest_framework',
 ]
 
 MIDDLEWARE = [
@@ -132,3 +133,9 @@ STATICFILES_STORAGE = 'whitenoise.django.GzipManifestStaticFilesStorage'
 db_from_env = dj_database_url.config(conn_max_age=500)
 DATABASES['default'].update(db_from_env)
 
+REST_FRAMEWORK = {
+    'DEFAULT_PERMISSION_CLASSES': [
+        'rest_framework.permissions.IsAdminUser',
+    ],
+    'PAGE_SIZE': 10
+}

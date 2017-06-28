@@ -2,8 +2,9 @@ from django.db import models
 
 
 # Create your models here.
-# TODO: explanation, tags, source, shared_text, imagedb, classification, degree
+# TODO: explanation, tags, source, shared_text, imagedb
 from django.utils.html import strip_tags
+from rest_framework import serializers
 
 
 class QuestionType:
@@ -24,6 +25,7 @@ class Question(models.Model):
     body_html = models.TextField(verbose_name='Text')
     body_plain_text = models.TextField()
     category = models.ForeignKey("category", default=None, blank=True, null=True)
+    question_source = models.ForeignKey("questionsource", default=None, blank=True, null=True)
 
     QUESTION_TYPE = (
         ('t', 'text'),
@@ -56,6 +58,7 @@ class Alternative(models.Model):
     body_html = models.TextField()
     body_plain_text = models.TextField()
     is_correct = models.BooleanField(default=False)
+    explain = models.TextField(default=None, blank=True, null=True)
 
     def __str__(self):
         return self.body_plain_text
@@ -74,3 +77,12 @@ class Category(models.Model):
     @property
     def children(self):
         return Category.objects.filter(parent=self.pk)
+
+
+class QuestionSource(models.Model):
+    name = models.CharField(max_length=50)
+
+
+class CategorySerializer(serializers.HyperlinkedModelSerializer):
+    class Meta:
+        model = Category

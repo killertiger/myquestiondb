@@ -12,13 +12,14 @@
         <p>{{ field.label_tag }}:
             {{ field }}
             {% if field.name == "category"%}
-                <a href="#">Select</a>
+                <div id="container">
+                </div>
+                <!--a href="#">Select</a-->
             {% endif %}
         </p>
     {% endfor %}
 
-<div id="container">
-</div>
+
 <script>
 $(function() {
     function getCookie(name) {
@@ -88,7 +89,7 @@ $(function() {
 </script>
 
     {% if question_type == 'm' %}
-    <table id="tbalternatives">
+    <table>
         {{ alternatives.management_form }}
 
         {% for form in alternatives.forms %}
@@ -96,7 +97,7 @@ $(function() {
                 <thead>
                 <tr>
                     {% for field in form.visible_fields %}
-                        <th>{{ field.lable|capfirst }}</th>
+                        <th>{{ field.label|capfirst }}</th>
                     {% endfor %}
                 </tr>
                 </thead>

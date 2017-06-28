@@ -1,8 +1,13 @@
 from django.conf.urls import url, include
 from django.contrib import admin
 from django.views.generic import RedirectView
+from rest_framework import routers
 
 from questiondb import views
+
+
+router =  routers.DefaultRouter()
+router.register(r'categories', views.CategoryViewSet)
 
 urlpatterns = [
     url(r'^$', RedirectView.as_view(url='question')),
@@ -13,4 +18,6 @@ urlpatterns = [
     url(r'^question/(?P<pk>\d+)/delete$', views.QuestionDeteleView.as_view(), name='question-delete'),
     url(r'^category/$', views.get_categories, name='categories'),
     url(r'^category/create/$', views.create_category, name='category-create'),
+    url(r'^api/$', include(router.urls)),
+    url(r'^api/api-auth/', include('rest_framework.urls', namespace='rest_framework')),
 ]
