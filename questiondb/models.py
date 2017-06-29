@@ -5,6 +5,8 @@ from django.db import models
 # TODO: explanation, tags, source, shared_text, imagedb
 from django.utils.html import strip_tags
 from rest_framework import serializers
+from rest_framework.relations import PrimaryKeyRelatedField
+from rest_framework_recursive.fields import RecursiveField
 
 
 class QuestionType:
@@ -83,6 +85,8 @@ class QuestionSource(models.Model):
     name = models.CharField(max_length=50)
 
 
-class CategorySerializer(serializers.HyperlinkedModelSerializer):
+class CategorySerializer(serializers.ModelSerializer):
+    children = serializers.ListField(child=RecursiveField())
     class Meta:
         model = Category
+        fields = ('__all__')

@@ -10,6 +10,7 @@ from django.views.generic import DeleteView
 from django.views.generic import UpdateView
 from extra_views import SearchableListMixin
 from django.db import models
+from rest_framework import generics
 from rest_framework import viewsets
 
 from questiondb.forms import AlternativeFormSetCreate, AlternativeFormSetUpdate
@@ -115,5 +116,18 @@ def create_category(request):
 
 
 class CategoryViewSet(viewsets.ModelViewSet):
+    queryset = Category.objects.all()
+    serializer_class = CategorySerializer
+
+
+class CategoryAPICreate(generics.ListCreateAPIView):
+    queryset = Category.objects.filter(parent__isnull=True)
+    serializer_class = CategorySerializer
+
+    def perform_create(self, serializer):
+        serializer.save()
+
+
+class CategoryAPIDetails(generics.RetrieveUpdateDestroyAPIView):
     queryset = Category.objects.all()
     serializer_class = CategorySerializer
