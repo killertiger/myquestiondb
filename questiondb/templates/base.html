@@ -12,6 +12,9 @@
     <!-- Treeview -->
     <link rel="stylesheet" href="//cdnjs.cloudflare.com/ajax/libs/jstree/3.3.3/themes/default/style.min.css" />
     <script src="//cdnjs.cloudflare.com/ajax/libs/jstree/3.3.3/jstree.min.js"></script>
+    {% load static %}
+    <!-- Site -->
+    <script src="{% static 'js/site.js' %}"></script>
 </head>
 <body>
 {% block content %}{% endblock %}

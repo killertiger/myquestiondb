@@ -20,111 +20,6 @@
         </p>
     {% endfor %}
 
-
-<script>
-$(function() {
-    function getCookie(name) {
-        var cookieValue = null;
-        if (document.cookie && document.cookie != '') {
-            var cookies = document.cookie.split(';');
-            for (var i = 0; i < cookies.length; i++) {
-                var cookie = jQuery.trim(cookies[i]);
-                // Does this cookie string begin with the name we want?
-                if (cookie.substring(0, name.length + 1) == (name + '=')) {
-                    cookieValue = decodeURIComponent(cookie.substring(name.length + 1));
-                    break;
-                }
-            }
-        }
-        return cookieValue;
-    }
-    var csrftoken = getCookie('csrftoken');
-
-    function csrfSafeMethod(method) {
-        // these HTTP methods do not require CSRF protection
-        return (/^(GET|HEAD|OPTIONS|TRACE)$/.test(method));
-    }
-    $.ajaxSetup({
-        beforeSend: function(xhr, settings) {
-            if (!csrfSafeMethod(settings.type) && !this.crossDomain) {
-                xhr.setRequestHeader("X-CSRFToken", csrftoken);
-            }
-        }
-    });
-
-
-   jQuery.each( [ "put", "delete" ], function( i, method ) {
-      jQuery[ method ] = function( url, data, callback, type ) {
-        if ( jQuery.isFunction( data ) ) {
-          type = type || callback;
-          callback = data;
-          data = undefined;
-        }
-
-        return jQuery.ajax({
-          url: url,
-          type: method,
-          dataType: type,
-          data: data,
-          success: callback
-        });
-      };
-    });
-
-
-    $('#container').jstree({
-      "core" :
-      { "check_callback" : true,
-          'data' :
-            {
-                "url" : "/questiondb/api/categories/list_all/",
-                "dataType" : "json" // needed only if you do not supply JSON headers
-            }
-      },
-      "plugins" : ["dnd","contextmenu"]
-    });
-    $("#container").on("create_node.jstree", function (e, data) {
-        $.post("/questiondb/api/categories/",
-                {name: data.node.text, parent: data.node.parent},
-                function (response) {
-                    $("#container").jstree(true).set_id(data.node, response.id);
-                }
-              );
-    });
-    $("#container").on("rename_node.jstree", function (e, data) {
-        $.put("/questiondb/api/categories/" + data.node.id + '/',
-                {name: data.node.text, parent: data.node.parent},
-                function () {
-                }
-              );
-    });
-    $("#container").on("delete_node.jstree", function (e, data) {
-        $.delete("/questiondb/api/categories/" + data.node.id + '/',
-                function () {
-                }
-              );
-    });
-    $("#container").on("move_node.jstree", function (e, data) {
-        $.put("/questiondb/api/categories/" + data.node.id + '/',
-                {name: data.node.text, parent: data.node.parent},
-                function () {
-                }
-              );
-    });
-    $("#container").on("select_node.jstree", function (e, data) {
-        console.log(data);
-        $("#category_id").val(data.node.id);
-        console.log($("#category_id").val());
-
-    });
-    {% if question.category_id %}
-    $("#container").on('loaded.jstree', function() {
-        $('#container').jstree('select_node', [{{ question.category_id }}]);
-      });
-    {% endif %}
-});
-</script>
-
     {% if question_type == 'm' %}
     <table>
         {{ alternatives.management_form }}
@@ -165,25 +60,83 @@ $(function() {
     </form>
 
 <script src="https://cdn.ckeditor.com/4.7.0/standard/ckeditor.js"></script>
-<script src="{% static 'formset/jquery.formset.js' %}"></script>
+<script src="{% static 'js/formset/jquery.formset.js' %}"></script>
 
 <script type="text/javascript">
-    var currentLetter = null;
-    $('.formset_row').formset({
-        addText: 'add alternative',
-        deleteText: 'remove',
-        prefix: 'alternative_set',
-        added: function () {
-            var element = $(".alternative-index").last();
-            //alert($(".alternative-index").last().html());
-            if(currentLetter == null) {
-                currentLetter = element.text().trim().charCodeAt(0);
+    $(function() {
+
+        var currentLetter = null;
+        $('.formset_row').formset({
+            addText: 'add alternative',
+            deleteText: 'remove',
+            prefix: 'alternative_set',
+            added: function () {
+                var element = $(".alternative-index").last();
+                //alert($(".alternative-index").last().html());
+                if(currentLetter == null) {
+                    currentLetter = element.text().trim().charCodeAt(0);
+                }
+                var charCode = ++currentLetter;
+                var newLetter = String.fromCharCode(charCode);
+                element.text(newLetter + ")");
             }
-            var charCode = ++currentLetter;
-            var newLetter = String.fromCharCode(charCode);
-            element.text(newLetter + ")");
+        });
+        CKEDITOR.replace( 'body_html' );
+
+        function get_parent_node(data) {
+            return data.node.parent.replace("#", "");
         }
+
+        $('#container').jstree({
+          "core" :
+          { "check_callback" : true,
+              'data' :
+                {
+                    "url" : "/questiondb/api/categories/list_all/",
+                    "dataType" : "json" // needed only if you do not supply JSON headers
+                }
+          },
+          "plugins" : ["dnd","contextmenu"]
+        });
+        $("#container").on("create_node.jstree", function (e, data) {
+            $.post("/questiondb/api/categories/",
+                    {name: data.node.text, parent: data.node.parent},
+                    function (response) {
+                        $("#container").jstree(true).set_id(data.node, response.id);
+                    }
+                  );
+        });
+        $("#container").on("rename_node.jstree", function (e, data) {
+            $.put("/questiondb/api/categories/" + data.node.id + '/',
+                    {name: data.node.text, parent: data.node.parent},
+                    function () {
+                    }
+                  );
+        });
+        $("#container").on("delete_node.jstree", function (e, data) {
+            $.delete("/questiondb/api/categories/" + data.node.id + '/',
+                    function () {
+                    }
+                  );
+        });
+        $("#container").on("move_node.jstree", function (e, data) {
+            $.put("/questiondb/api/categories/" + data.node.id + '/',
+                    {name: data.node.text, parent: get_parent_node(data)},
+                    function () {
+                    }
+                  );
+        });
+        $("#container").on("select_node.jstree", function (e, data) {
+            console.log(data);
+            $("#category_id").val(data.node.id);
+            console.log($("#category_id").val());
+
+        });
+        {% if question.category_id %}
+        $("#container").on('loaded.jstree', function() {
+            $('#container').jstree('select_node', [{{ question.category_id }}]);
+          });
+        {% endif %}
     });
-    CKEDITOR.replace( 'body_html' );
 </script>
 {% endblock %}

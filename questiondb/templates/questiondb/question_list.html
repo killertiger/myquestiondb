@@ -1,22 +1,17 @@
-<!DOCTYPE html>
-<html lang="en">
-<head>
-    <meta charset="UTF-8">
-    <title>Title</title>
-</head>
-<body>
-{% if question_list %}
-<ul>
-{% for question in question_list %}
-    <li>{{ question }} - <a href="{% url 'question-update' question.pk %}">Edit</a> -
-    <a href="{% url 'question-delete' question.pk %}">delete</a> </li>
-{% endfor %}
-</ul>
-{% endif %}
-<p>
-New
-<a href="{% url 'question-create' 'm'%}">Multiple Choice</a> |
-<a href="{% url 'question-create' 't'%}">Text</a>
-</p>
-</body>
-</html>
+{% extends 'base.html' %}
+
+{% block content %}
+    {% if question_list %}
+    <ul>
+    {% for question in question_list %}
+        <li>{{ question }} - <a href="{% url 'question-update' question.pk %}">Edit</a> -
+        <a href="{% url 'question-delete' question.pk %}">delete</a> </li>
+    {% endfor %}
+    </ul>
+    {% endif %}
+    <p>
+    New
+    <a href="{% url 'question-create' 'm'%}">Multiple Choice</a> |
+    <a href="{% url 'question-create' 't'%}">Text</a>
+    </p>
+{% endblock %}
