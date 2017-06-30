@@ -28,7 +28,7 @@ class Migration(migrations.Migration):
         migrations.AlterField(
             model_name='question',
             name='degree_of_dificulty',
-            field=models.IntegerField(choices=[(1, 'Very Easy'), (2, 'Easy'), (3, 'Normal'), (4, 'Hard'), (5, 'Very Hard')], default=(3,)),
+            field=models.IntegerField(choices=[(1, 'Very Easy'), (2, 'Easy'), (3, 'Normal'), (4, 'Hard'), (5, 'Very Hard')], default=3),
         ),
         migrations.AddField(
             model_name='question',

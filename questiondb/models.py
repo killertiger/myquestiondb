@@ -44,7 +44,7 @@ class Question(models.Model):
     )
 
     question_type = models.CharField(max_length=1, choices=QUESTION_TYPE, blank=False, default='t')
-    degree_of_dificulty = models.IntegerField(choices=DEGREE_OF_DIFICULTY, blank=False, default=DegreeOfDificulty.Normal)
+    degree_of_dificulty = models.IntegerField(choices=DEGREE_OF_DIFICULTY, blank=False, default=3)
 
     def __str__(self):
         return self.title
