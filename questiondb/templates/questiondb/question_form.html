@@ -87,7 +87,7 @@ $(function() {
         $.post("/questiondb/api/categories/",
                 {name: data.node.text, parent: data.node.parent},
                 function (response) {
-                    $("#container").jstree(true).set_id(data, response.id);
+                    $("#container").jstree(true).set_id(data.node, response.id);
                 }
               );
     });
