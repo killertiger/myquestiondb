@@ -108,12 +108,6 @@ def get_categories(request):
 
     return JsonResponse(response_data, safe=False)
 
-def create_category(request):
-    category = Category(name=request.POST["name"], parent_id=request.POST["parent_id"])
-    category.Save()
-
-    return HttpResponse(category.pk)
-
 
 class CategoryViewSet(viewsets.ModelViewSet):
     queryset = Category.objects.all()

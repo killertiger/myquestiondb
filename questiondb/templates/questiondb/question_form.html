@@ -6,15 +6,16 @@
 <form action="" method="post">
     {% csrf_token %}
     <input type="hidden" name="question_type" value="{{ question_type }}">
-    {#  {{ form.as_p }} #}
+    <input type="hidden" id="category_id" name="category" value="{{ question.category_id }}">
 
     {% for field in form.visible_fields %}
-        <p>{{ field.label_tag }}:
-            {{ field }}
-            {% if field.name == "category"%}
+        <p>{{ field.label_tag }}
+
+            {% if field.name != "category"%}
+                {{ field }}
+            {% else %}
                 <div id="container">
                 </div>
-                <!--a href="#">Select</a-->
             {% endif %}
         </p>
     {% endfor %}
@@ -52,7 +53,7 @@ $(function() {
     });
 
 
-   jQuery.each( [ "patch", "delete" ], function( i, method ) {
+   jQuery.each( [ "put", "delete" ], function( i, method ) {
       jQuery[ method ] = function( url, data, callback, type ) {
         if ( jQuery.isFunction( data ) ) {
           type = type || callback;
@@ -71,39 +72,56 @@ $(function() {
     });
 
 
-  $('#container').jstree({
+    $('#container').jstree({
       "core" :
       { "check_callback" : true,
           'data' :
             {
-                "url" : "/questiondb/category/",
+                "url" : "/questiondb/api/categories/list_all/",
                 "dataType" : "json" // needed only if you do not supply JSON headers
             }
       },
       "plugins" : ["dnd","contextmenu"]
-  });
+    });
     $("#container").on("create_node.jstree", function (e, data) {
-        // console.log("create_node.jstree");
-        // console.log(data);
-        $.post("/questiondb/category/create/", {parent_id: data.parent, name: data.node.text}, function () {
-        });
+        $.post("/questiondb/api/categories/",
+                {name: data.node.text, parent: data.node.parent},
+                function (response) {
+                    $("#container").jstree(true).set_id(data, response.id);
+                }
+              );
     });
     $("#container").on("rename_node.jstree", function (e, data) {
-        category = {pk: data.node.id, name: data.text};
-        $.post("/questiondb/category/" + data.node.id, {name: data.text}, function () {
-            alert('ok');
-        });
+        $.put("/questiondb/api/categories/" + data.node.id + '/',
+                {name: data.node.text, parent: data.node.parent},
+                function () {
+                }
+              );
     });
     $("#container").on("delete_node.jstree", function (e, data) {
-        $.post("/questiondb/category/" + data.node.id, function () {
-            alert('ok');
-        });
+        $.delete("/questiondb/api/categories/" + data.node.id + '/',
+                function () {
+                }
+              );
     });
     $("#container").on("move_node.jstree", function (e, data) {
-        $.post("/questiondb/category/" + data.node.id, {parent_id: data.parent}, function () {
-            alert('ok');
-        });
+        $.put("/questiondb/api/categories/" + data.node.id + '/',
+                {name: data.node.text, parent: data.node.parent},
+                function () {
+                }
+              );
     });
+    $("#container").on("select_node.jstree", function (e, data) {
+        console.log(data);
+        $("#category_id").val(data.node.id);
+        console.log($("#category_id").val());
+
+    });
+    {% if question.category_id %}
+    $("#container").on('loaded.jstree', function() {
+        $('#container').jstree('select_node', [{{ question.category_id }}]);
+      });
+    {% endif %}
 });
 </script>
 
